@@ -240,12 +240,8 @@ function AnalysisFrame() {
           100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
         }
         @keyframes floatUp {
-          0%, 100% { transform: translateY(0px);   opacity: 0.85; }
-          50%       { transform: translateY(-5px);  opacity: 1;    }
-        }
-        @keyframes drawBracket {
-          from { opacity: 0; transform: scale(0.85); }
-          to   { opacity: 1; transform: scale(1);    }
+          0%, 100% { transform: translateY(0px); }
+          50%       { transform: translateY(-6px); }
         }
       `}</style>
     </div>
@@ -256,169 +252,235 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <div>
-      {/* ── Hero ── */}
-      <section
-        className="relative overflow-hidden dot-grid-bg"
-        style={{ background: "linear-gradient(160deg, #080F1E 0%, #0F172A 50%, #0C1729 100%)" }}
-      >
-        {/* Ambient blobs */}
-        <div className="absolute top-0 left-0 w-[700px] h-[500px] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 30% 40%, rgba(59,130,246,0.1) 0%, transparent 60%)", filter: "blur(60px)" }} />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[400px] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 70% 60%, rgba(99,102,241,0.1) 0%, transparent 60%)", filter: "blur(60px)" }} />
+    <div className="relative overflow-hidden" style={{ background: "#0F172A" }}>
+      {/* Background dot grid pattern */}
+      <div className="absolute inset-0 dot-grid-bg pointer-events-none opacity-60" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      {/* Ambient background glows */}
+      <div
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
+      <div
+        className="absolute top-2/3 right-10 w-[400px] h-[300px] rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+          filter: "blur(50px)",
+        }}
+      />
 
-            {/* ── Left: text content ── */}
-            <div>
-              {/* Label pill */}
-              <div
-                className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest"
-                style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.3)", color: "#60A5FA" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#3B82F6" }} />
-                AI-Powered Flood Intelligence
-              </div>
+      {/* ── HERO SECTION ── */}
+      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          
+          {/* Left Column — Copy & CTAs */}
+          <div className="text-center lg:text-left space-y-6">
+            {/* Status Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold font-mono tracking-wide"
+              style={{
+                background: "rgba(59, 130, 246, 0.1)",
+                border: "1px solid rgba(59, 130, 246, 0.3)",
+                color: "#60A5FA",
+              }}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#3B82F6" }} />
+              AI-Powered Flood Detection
+            </div>
 
-              <h1
-                className="text-5xl sm:text-6xl font-bold tracking-tight leading-tight"
+            {/* Headline */}
+            <h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              <span style={{ color: "#F1F5F9" }}>Instant Satellite</span>
+              <br />
+              <span
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  background: "linear-gradient(135deg, #F1F5F9 20%, #93C5FD 60%, #60A5FA 100%)",
+                  background: "linear-gradient(135deg, #60A5FA 0%, #3B82F6 40%, #818CF8 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Detect Floods.<br />Save Lives.
-              </h1>
+                Flood Segmentation
+              </span>
+            </h1>
 
-              <p className="mt-6 text-base sm:text-lg leading-relaxed max-w-lg" style={{ color: "#94A3B8" }}>
-                AI-powered flood damage assessment for disaster response teams. Upload
-                satellite or drone imagery and get flood segmentation, risk level, and
-                area analysis in seconds.
-              </p>
+            {/* Subheadline */}
+            <p className="text-lg sm:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0" style={{ color: "#94A3B8" }}>
+              Upload satellite or aerial imagery to detect flooded areas, evaluate risk levels, and generate emergency response reports in seconds.
+            </p>
 
-              {/* CTAs */}
-              <div className="mt-9 flex flex-col sm:flex-row gap-3">
-                <Link to="/upload" className="btn-primary px-7 py-3.5 text-base cursor-pointer inline-flex items-center justify-center gap-2">
-                  <Upload className="w-4 h-4" aria-hidden="true" />
-                  Analyze New Image
-                </Link>
-                <Link to="/history" className="btn-ghost px-7 py-3.5 text-base cursor-pointer inline-flex items-center justify-center gap-2">
-                  <History className="w-4 h-4" aria-hidden="true" />
-                  View History
-                </Link>
-              </div>
-
-              {/* Stat badges */}
-              <div className="mt-8 flex flex-wrap gap-3">
-                {stats.map(({ value, label }) => (
-                  <div key={label} className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm"
-                    style={{ background: "rgba(30,41,59,0.6)", border: "1px solid rgba(59,130,246,0.15)", color: "#94A3B8" }}>
-                    <span className="font-bold" style={{ color: "#60A5FA", fontFamily: "'Space Grotesk', sans-serif" }}>{value}</span>
-                    <span>{label}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Guest CTA */}
-              {!user && (
-                <div className="mt-8 pt-8" style={{ borderTop: "1px solid rgba(59,130,246,0.1)" }}>
-                  <p className="text-sm mb-4" style={{ color: "#64748B" }}>
-                    New to {APP_NAME}? Create a free account to start analyzing.
-                  </p>
-                  <Link to="/signup" className="btn-ghost inline-flex items-center gap-2 px-7 py-3 text-base cursor-pointer">
-                    Get Started — Free Account
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </Link>
-                </div>
-              )}
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <Link
+                to={user ? "/upload" : "/signup"}
+                className="btn-primary px-8 py-3.5 text-base flex items-center justify-center gap-2.5 w-full sm:w-auto cursor-pointer"
+              >
+                <Upload className="w-5 h-5" />
+                <span>{user ? "Start Analysis" : "Try FloodScope Free"}</span>
+              </Link>
+              <Link
+                to="/about"
+                className="btn-ghost px-8 py-3.5 text-base flex items-center justify-center gap-2 w-full sm:w-auto cursor-pointer"
+              >
+                <span>Learn How It Works</span>
+              </Link>
             </div>
 
-            {/* ── Right: animated analysis frame ── */}
-            <div className="hidden lg:block">
-              <AnalysisFrame />
+            {/* Quick Stats bar */}
+            <div
+              className="grid grid-cols-3 gap-4 pt-6 max-w-md mx-auto lg:mx-0 border-t"
+              style={{ borderColor: "rgba(59, 130, 246, 0.12)" }}
+            >
+              {stats.map(({ value, label }) => (
+                <div key={label} className="text-center lg:text-left">
+                  <div
+                    className="text-xl sm:text-2xl font-bold font-mono"
+                    style={{
+                      background: "linear-gradient(135deg, #93C5FD, #60A5FA)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {value}
+                  </div>
+                  <div className="text-xs mt-0.5" style={{ color: "#64748B" }}>
+                    {label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* SVG wave separator */}
-        <div className="relative w-full overflow-hidden" style={{ marginBottom: "-2px", lineHeight: 0 }}>
-          <svg
-            viewBox="0 0 1440 80"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            style={{ display: "block", width: "100%", height: "80px" }}
-          >
-            <defs>
-              <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="rgba(59,130,246,0.3)" />
-                <stop offset="50%" stopColor="rgba(99,102,241,0.2)" />
-                <stop offset="100%" stopColor="rgba(59,130,246,0.3)" />
-              </linearGradient>
-            </defs>
-            {/* Back wave */}
-            <path
-              d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 C1350,70 1420,30 1440,40 L1440,80 L0,80 Z"
-              fill="rgba(10,17,32,0.9)"
-            />
-            {/* Front wave with glow */}
-            <path
-              d="M0,55 C180,20 360,70 540,45 C720,20 900,65 1080,40 C1260,15 1370,55 1440,45 L1440,80 L0,80 Z"
-              fill="#0A1120"
-            />
-            {/* Animated wave line */}
-            <path
-              d="M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 C1350,70 1420,30 1440,40"
-              fill="none"
-              stroke="url(#waveGrad)"
-              strokeWidth="1.5"
-              style={{ animation: "waveLine 4s ease-in-out infinite alternate" }}
-            />
-          </svg>
-        </div>
+          {/* Right Column — Animated Satellite Hero Frame */}
+          <AnalysisFrame />
 
-        <style>{`
-          @keyframes waveLine {
-            0%   { d: path("M0,40 C200,80 400,0 600,40 C800,80 1000,0 1200,40 C1350,70 1420,30 1440,40"); }
-            100% { d: path("M0,45 C200,10 400,70 600,35 C800,5  1000,60 1200,30 C1350,55 1420,15 1440,45"); }
-          }
-        `}</style>
+        </div>
       </section>
 
-      {/* ── Features ── */}
-      <section className="py-20 sm:py-28" style={{ background: "#0A1120" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#3B82F6" }}>
-              How It Works
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>
-              Everything you need in one place
-            </h2>
-          </div>
+      {/* Wave separator */}
+      <div className="relative w-full overflow-hidden leading-none pointer-events-none" style={{ height: "60px" }}>
+        <svg
+          className="relative block w-full h-full"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,0 C150,90 350,-40 500,40 C650,120 900,10 1200,40 L1200,120 L0,120 Z"
+            fill="rgba(30, 41, 59, 0.3)"
+          />
+          <path
+            d="M0,20 C200,100 450,0 700,60 C950,120 1100,30 1200,60 L1200,120 L0,120 Z"
+            fill="rgba(15, 23, 42, 0.8)"
+          />
+        </svg>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map(({ icon: Icon, title, desc, color, rgb }) => (
-              <div key={title} className="glass-card glass-card-hover p-7 flex flex-col gap-4">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `rgba(${rgb}, 0.12)`, boxShadow: `0 0 20px rgba(${rgb}, 0.2)` }}
-                >
-                  <Icon className="w-5 h-5" style={{ color }} aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>
-                    {title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>{desc}</p>
-                </div>
+      {/* ── FEATURES SECTION ── */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <h2
+            className="text-3xl sm:text-4xl font-bold tracking-tight"
+            style={{ color: "#F1F5F9", fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Everything you need in one place
+          </h2>
+          <p className="mt-3 text-base" style={{ color: "#94A3B8" }}>
+            Designed for disaster response teams, researchers, and emergency planners.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map(({ icon: Icon, title, desc, color, rgb }) => (
+            <div
+              key={title}
+              className="glass-card glass-card-hover p-8 relative overflow-hidden group"
+            >
+              {/* Top ambient color bar */}
+              <div
+                className="absolute top-0 left-0 right-0 h-1"
+                style={{ background: `linear-gradient(90deg, ${color}, transparent)` }}
+              />
+
+              {/* Icon Container */}
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
+                style={{
+                  background: `rgba(${rgb}, 0.12)`,
+                  border: `1px solid rgba(${rgb}, 0.3)`,
+                }}
+              >
+                <Icon className="w-6 h-6" style={{ color }} />
               </div>
-            ))}
+
+              {/* Title & Desc */}
+              <h3 className="text-xl font-bold mb-3" style={{ color: "#F1F5F9" }}>
+                {title}
+              </h3>
+              <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
+                {desc}
+              </p>
+
+              {/* Subtle hover glow */}
+              <div
+                className="absolute -bottom-10 -right-10 w-32 h-32 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: `radial-gradient(circle, rgba(${rgb}, 0.15) 0%, transparent 70%)`,
+                  filter: "blur(20px)",
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── CTA BANNER ── */}
+      <section className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div
+          className="glass-card p-10 md:p-14 text-center relative overflow-hidden"
+          style={{
+            borderColor: "rgba(59, 130, 246, 0.3)",
+            background: "linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%)",
+          }}
+        >
+          {/* Ambient glow in banner */}
+          <div
+            className="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+
+          <h2
+            className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 relative z-10"
+            style={{ color: "#F1F5F9" }}
+          >
+            Ready to analyze flood impact?
+          </h2>
+          <p className="text-base sm:text-lg max-w-xl mx-auto mb-8 relative z-10" style={{ color: "#94A3B8" }}>
+            Get instant AI segmentation and detailed damage risk metrics in seconds.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+            <Link
+              to={user ? "/upload" : "/signup"}
+              className="btn-primary px-8 py-3.5 text-base cursor-pointer w-full sm:w-auto text-center"
+            >
+              {user ? "Go to Upload" : "Create Free Account"}
+            </Link>
+            {user && (
+              <Link
+                to="/history"
+                className="btn-ghost px-8 py-3.5 text-base flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
+              >
+                <History className="w-4 h-4" />
+                <span>View Past Analyses</span>
+              </Link>
+            )}
           </div>
         </div>
       </section>

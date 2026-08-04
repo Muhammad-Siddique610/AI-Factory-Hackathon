@@ -11,8 +11,8 @@ const techStack = [
 ];
 
 const team = [
-  { name: "Muhammad Siddique",     role: "Full Stack Developer",                initials: "MS", color: "#3B82F6" },
   { name: "Amaim Farooq",          role: "AI/ML Engineer",                      initials: "AF", color: "#6366F1" },
+  { name: "Muhammad Siddique",     role: "Full Stack Developer",                initials: "MS", color: "#3B82F6" },
   { name: "Abubakar Mughal",       role: "Full Stack Developer",                initials: "AM", color: "#10B981" },
   { name: "Ayesha Arshad",         role: "AI/ML Engineer",                      initials: "AA", color: "#F59E0B" },
   { name: "Muhammad Sohaib Farooq",role: "AI/ML Engineer",                      initials: "SF", color: "#EC4899" },
