@@ -37,14 +37,14 @@ export async function generatePdfReport(prediction: PredictionReport): Promise<v
   let y = margin;
 
   // ── Color palette ──
-  const PRIMARY = [37, 99, 235]; // Blue
-  const ACCENT = [14, 165, 233]; // Sky
-  const DARK = [30, 41, 59];
-  const MUTED = [148, 163, 184];
-  const LIGHT_BG = [241, 245, 249];
-  const WHITE = [255, 255, 255];
+  const PRIMARY: [number, number, number] = [37, 99, 235]; // Blue
+  const ACCENT: [number, number, number] = [14, 165, 233]; // Sky
+  const DARK: [number, number, number] = [30, 41, 59];
+  const MUTED: [number, number, number] = [148, 163, 184];
+  const LIGHT_BG: [number, number, number] = [241, 245, 249];
+  const WHITE: [number, number, number] = [255, 255, 255];
 
-  const riskColors: Record<string, number[]> = {
+  const riskColors: Record<string, [number, number, number]> = {
     low: [34, 197, 94],
     medium: [234, 179, 8],
     high: [239, 68, 68],
@@ -89,7 +89,7 @@ export async function generatePdfReport(prediction: PredictionReport): Promise<v
   // ── Stats cards ──
   const cardW = (pageWidth - margin * 2 - 8 * 3) / 4;
   const cardH = 36;
-  const stats = [
+  const stats: { label: string; value: string; color: [number, number, number] }[] = [
     { label: "Flood Area", value: `${prediction.floodPercentage.toFixed(1)}%`, color: ACCENT },
     { label: "Risk Level", value: prediction.riskLevel.toUpperCase(), color: riskColor },
     { label: "Confidence", value: `${prediction.confidence.toFixed(1)}%`, color: [34, 197, 94] },

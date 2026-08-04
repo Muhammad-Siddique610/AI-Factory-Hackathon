@@ -65,16 +65,10 @@ export default function Layout() {
                     : "transform 0.45s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.45s ease",
                 }}
               >
-                <svg
-                  className="w-4 h-4 text-white"
-                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                  style={{
-                    transform: logoClicked ? "scale(1.15)" : "scale(1)",
-                    transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-                  }}
-                >
-                  <path d="M2 12s3-4 6-4 6 4 6 4 3-4 6-4" />
-                  <path d="M2 17s3-4 6-4 6 4 6 4 3-4 6-4" />
+                {/* Water droplet — same as favicon */}
+                <svg viewBox="0 0 32 32" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 3 C16 3 7 14 7 20 A9 9 0 0 0 25 20 C25 14 16 3 16 3 Z" fill="white" opacity="0.95"/>
+                  <path d="M10 22 Q13 19 16 22 Q19 25 22 22" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </div>
               {/* Logo text — slides & brightens on click */}
@@ -228,8 +222,10 @@ export default function Layout() {
                 className="w-6 h-6 rounded-md flex items-center justify-center"
                 style={{ background: "linear-gradient(135deg, #3B82F6, #6366F1)" }}
               >
-                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2 12s3-4 6-4 6 4 6 4 3-4 6-4" />
+                {/* Water droplet — same as favicon */}
+                <svg viewBox="0 0 32 32" className="w-4 h-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16 3 C16 3 7 14 7 20 A9 9 0 0 0 25 20 C25 14 16 3 16 3 Z" fill="white" opacity="0.95"/>
+                  <path d="M10 22 Q13 19 16 22 Q19 25 22 22" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
                 </svg>
               </div>
               <span className="text-sm font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#64748B" }}>

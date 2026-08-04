@@ -11,11 +11,14 @@ const techStack = [
 ];
 
 const team = [
-  { name: "Alex Chen",     role: "Full-Stack Developer", initials: "AC", color: "#3B82F6" },
-  { name: "Priya Sharma",  role: "AI/ML Engineer",        initials: "PS", color: "#6366F1" },
-  { name: "Marcus Johnson",role: "UX Designer",           initials: "MJ", color: "#10B981" },
-  { name: "Sarah Okafor",  role: "Product Lead",          initials: "SO", color: "#F59E0B" },
+  { name: "Muhammad Siddique",     role: "Full Stack Developer",                initials: "MS", color: "#3B82F6" },
+  { name: "Amaim Farooq",          role: "AI/ML Engineer",                      initials: "AF", color: "#6366F1" },
+  { name: "Abubakar Mughal",       role: "Full Stack Developer",                initials: "AM", color: "#10B981" },
+  { name: "Ayesha Arshad",         role: "AI/ML Engineer",                      initials: "AA", color: "#F59E0B" },
+  { name: "Muhammad Sohaib Farooq",role: "AI/ML Engineer",                      initials: "SF", color: "#EC4899" },
+  { name: "Fatima Shahid",         role: "Product Manager",                     initials: "FS", color: "#06B6D4" },
 ];
+
 
 function colorToRgba(hex: string, alpha: number) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -92,20 +95,39 @@ export default function About() {
             <h2 className="text-lg font-bold mb-5" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>
               Team
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {team.map(({ name, role, initials, color }) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {team.map(({ name, role, initials, color, photo }: { name: string; role: string; initials: string; color: string; photo?: string }) => (
                 <div key={name} className="glass-card glass-card-hover p-5 text-center">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto font-bold text-base"
-                    style={{
-                      background: colorToRgba(color, 0.12),
-                      border: `1px solid ${colorToRgba(color, 0.3)}`,
-                      color,
-                      fontFamily: "'Space Grotesk', sans-serif",
-                    }}
-                  >
-                    {initials}
-                  </div>
+                  {photo ? (
+                    /* Real photo with glowing ring */
+                    <div
+                      className="w-14 h-14 rounded-2xl mx-auto overflow-hidden"
+                      style={{
+                        border: `2px solid ${colorToRgba(color, 0.5)}`,
+                        boxShadow: `0 0 16px ${colorToRgba(color, 0.3)}`,
+                      }}
+                    >
+                      <img
+                        src={photo}
+                        alt={name}
+                        className="w-full h-full object-cover object-top"
+                        style={{ transform: "scaleX(-1)" }}
+                      />
+                    </div>
+                  ) : (
+                    /* Initials badge */
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto font-bold text-base"
+                      style={{
+                        background: colorToRgba(color, 0.12),
+                        border: `1px solid ${colorToRgba(color, 0.3)}`,
+                        color,
+                        fontFamily: "'Space Grotesk', sans-serif",
+                      }}
+                    >
+                      {initials}
+                    </div>
+                  )}
                   <p className="mt-3 text-sm font-semibold" style={{ color: "#F1F5F9" }}>{name}</p>
                   <p className="text-xs mt-0.5" style={{ color: "#64748B" }}>{role}</p>
                 </div>
