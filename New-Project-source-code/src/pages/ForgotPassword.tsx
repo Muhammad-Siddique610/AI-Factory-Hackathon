@@ -13,122 +13,113 @@ export default function ForgotPassword() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    if (!email.trim()) {
-      setError("Please enter your email address.");
-      return;
-    }
-
+    if (!email.trim()) { setError("Please enter your email address."); return; }
     setLoading(true);
     const { error: resetError } = await resetPassword(email);
     setLoading(false);
-
-    if (resetError) {
-      setError(resetError);
-    } else {
-      setSent(true);
-    }
+    if (resetError) { setError(resetError); } else { setSent(true); }
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground text-center">
-          Forgot your password?
-        </h1>
-        <p className="mt-2 text-center text-foreground/60">
-          Enter your email and we&apos;ll send you a reset link.
-        </p>
+    <div
+      className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-16"
+      style={{ background: "#0F172A" }}
+    >
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+            style={{ background: "linear-gradient(135deg, #3B82F6, #6366F1)", boxShadow: "0 0 30px rgba(59,130,246,0.3)" }}
+          >
+            <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h1
+            className="text-2xl sm:text-3xl font-bold mb-2"
+            style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}
+          >
+            Forgot your password?
+          </h1>
+          <p className="text-sm" style={{ color: "#64748B" }}>
+            Enter your email and we'll send you a reset link.
+          </p>
+        </div>
 
         {sent ? (
-          <div className="mt-8 bg-white border border-border rounded-xl p-6 shadow-sm text-center">
-            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
+          <div
+            className="glass-card p-8 text-center"
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
+              style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)" }}
+            >
+              <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-lg font-semibold text-foreground">
+            <h2 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>
               Check your inbox
             </h2>
-            <p className="mt-2 text-sm text-foreground/60">
-              We&apos;ve sent a password reset link to{" "}
-              <span className="font-medium text-foreground">{email}</span>.
+            <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
+              We've sent a password reset link to{" "}
+              <span className="font-medium" style={{ color: "#F1F5F9" }}>{email}</span>.
               It may take a few moments to arrive.
             </p>
-            <p className="mt-3 text-sm text-foreground/40">
-              Didn&apos;t get the email? Check your spam folder or{" "}
+            <p className="mt-3 text-sm" style={{ color: "#475569" }}>
+              Didn't get the email?{" "}
               <button
-                onClick={() => {
-                  setSent(false);
-                  setError(null);
-                }}
-                className="text-accent hover:underline cursor-pointer"
+                onClick={() => { setSent(false); setError(null); }}
+                className="font-medium transition-colors cursor-pointer"
+                style={{ color: "#60A5FA" }}
               >
-                try again
+                Try again
               </button>
-              .
             </p>
           </div>
         ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="mt-8 bg-white border border-border rounded-xl p-6 shadow-sm"
-          >
+          <form onSubmit={handleSubmit} className="glass-card p-7 space-y-4">
             {error && (
               <div
-                className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+                className="p-3.5 rounded-xl text-sm flex items-start gap-2.5"
                 role="alert"
+                style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#FCA5A5" }}
               >
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
                 {error}
               </div>
             )}
 
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-foreground"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full px-4 py-2.5 border border-border rounded-lg text-sm focus:border-accent focus:ring-3 focus:ring-accent/15 outline-none transition-colors"
-                  placeholder="you@example.com"
-                  disabled={loading}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-accent text-white py-2.5 rounded-lg font-semibold hover:opacity-90 active:scale-97 transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? "Sending…" : "Send Reset Link"}
-              </button>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-1.5" style={{ color: "#94A3B8" }}>Email</label>
+              <input
+                id="email" type="email" autoComplete="email" value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-dark w-full px-4 py-3 text-sm" placeholder="you@example.com" disabled={loading}
+              />
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full py-3 text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Sending…
+                </span>
+              ) : "Send Reset Link"}
+            </button>
           </form>
         )}
 
-        <p className="mt-6 text-center text-sm text-foreground/50">
-          <Link
-            to="/login"
-            className="text-accent font-medium hover:underline cursor-pointer"
-          >
-            Back to login
+        <p className="mt-6 text-center text-sm" style={{ color: "#64748B" }}>
+          <Link to="/login" className="font-medium transition-colors cursor-pointer" style={{ color: "#60A5FA" }}>
+            ← Back to login
           </Link>
         </p>
       </div>

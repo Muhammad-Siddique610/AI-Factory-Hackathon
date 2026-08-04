@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Calendar,
-  Activity,
-  AlertTriangle,
-  Upload,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { Calendar, Activity, AlertTriangle, Upload, Loader2, RefreshCw } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -24,47 +17,28 @@ interface Prediction {
   created_at: string;
 }
 
-const RISK_COLORS: Record<string, string> = {
-  low: "text-success",
-  medium: "text-warning",
-  high: "text-destructive",
-  critical: "text-destructive",
+const RISK_STYLE: Record<string, { color: string; bg: string; border: string }> = {
+  low:      { color: "#10B981", bg: "rgba(16,185,129,0.1)",  border: "rgba(16,185,129,0.3)" },
+  medium:   { color: "#F59E0B", bg: "rgba(245,158,11,0.1)",  border: "rgba(245,158,11,0.3)" },
+  high:     { color: "#EF4444", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.3)" },
+  critical: { color: "#EF4444", bg: "rgba(239,68,68,0.15)",  border: "rgba(239,68,68,0.45)" },
 };
 
-const RISK_BG: Record<string, string> = {
-  low: "bg-success/10",
-  medium: "bg-warning/10",
-  high: "bg-destructive/10",
-  critical: "bg-destructive/10",
-};
-
-const STATUS_BADGES: Record<string, { label: string; className: string }> = {
-  completed: {
-    label: "Completed",
-    className: "bg-success/10 text-success",
-  },
-  processing: {
-    label: "Processing",
-    className: "bg-warning/10 text-warning",
-  },
-  failed: {
-    label: "Failed",
-    className: "bg-destructive/10 text-destructive",
-  },
-  pending: {
-    label: "Pending",
-    className: "bg-muted text-foreground/50",
-  },
+const STATUS_STYLE: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  completed: { label: "Complete",   color: "#10B981", bg: "rgba(16,185,129,0.15)",  border: "rgba(16,185,129,0.3)" },
+  processing: { label: "Processing", color: "#F59E0B", bg: "rgba(245,158,11,0.15)", border: "rgba(245,158,11,0.3)" },
+  failed:    { label: "Failed",     color: "#EF4444", bg: "rgba(239,68,68,0.15)",   border: "rgba(239,68,68,0.3)" },
+  pending:   { label: "Pending",    color: "#94A3B8", bg: "rgba(71,85,105,0.15)",   border: "rgba(71,85,105,0.3)" },
 };
 
 function SkeletonCard() {
   return (
-    <div className="bg-white border border-border rounded-xl overflow-hidden animate-pulse">
-      <div className="aspect-[3/2] bg-muted" />
+    <div className="glass-card overflow-hidden animate-pulse">
+      <div className="aspect-[3/2]" style={{ background: "rgba(30,41,59,0.5)" }} />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-muted rounded w-1/3" />
-        <div className="h-4 bg-muted rounded w-1/2" />
-        <div className="h-3 bg-muted rounded w-2/3" />
+        <div className="h-3 rounded-full w-1/3" style={{ background: "rgba(51,65,85,0.8)" }} />
+        <div className="h-4 rounded-full w-1/2" style={{ background: "rgba(51,65,85,0.8)" }} />
+        <div className="h-3 rounded-full w-2/3" style={{ background: "rgba(51,65,85,0.6)" }} />
       </div>
     </div>
   );
@@ -72,192 +46,187 @@ function SkeletonCard() {
 
 export default function History() {
   const { user } = useAuth();
-
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchPredictions = async () => {
     if (!user) return;
-
-    setIsLoading(true);
     setError(null);
-
     try {
       const { data, error: fetchError } = await supabase
-        .from("predictions")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-
+        .from("predictions").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
       if (fetchError) throw new Error(fetchError.message);
-
       setPredictions((data as Prediction[]) || []);
     } catch (err: any) {
       setError(err.message || "Failed to load analyses.");
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
-  useEffect(() => {
-    fetchPredictions();
-  }, [user]);
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchPredictions();
+  };
 
-  // ── Loading state ──
-  if (isLoading) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 py-12 sm:py-16">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Analysis History
-        </h1>
-        <p className="mt-2 text-foreground/70">Loading your past analyses…</p>
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <SkeletonCard key={i} />
-          ))}
+  useEffect(() => { fetchPredictions(); }, [user]);
+
+  /* ── Loading ── */
+  if (isLoading) return (
+    <div className="min-h-screen" style={{ background: "#0F172A" }}>
+      <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        <div className="mb-10">
+          <h1 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>Analysis History</h1>
+          <p className="mt-2 text-sm" style={{ color: "#64748B" }}>Loading your past analyses…</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  // ── Error state ──
-  if (error) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 py-12 sm:py-16">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Analysis History
-        </h1>
-        <div className="mt-8 bg-white border border-border rounded-xl p-12 text-center">
-          <AlertTriangle
-            className="w-12 h-12 text-destructive/60 mx-auto"
-            aria-hidden="true"
-          />
-          <p className="mt-4 text-foreground/70">Couldn't load your analyses.</p>
-          <p className="text-sm text-foreground/40 mt-1">{error}</p>
-          <button
-            onClick={fetchPredictions}
-            className="mt-6 inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-lg font-semibold hover:opacity-90 active:scale-97 transition-all duration-150 cursor-pointer"
-          >
+  /* ── Error ── */
+  if (error) return (
+    <div className="min-h-screen" style={{ background: "#0F172A" }}>
+      <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-8" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>Analysis History</h1>
+        <div className="glass-card p-16 text-center">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+            style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <AlertTriangle className="w-6 h-6" style={{ color: "#EF4444" }} aria-hidden="true" />
+          </div>
+          <p className="font-semibold mb-1" style={{ color: "#F1F5F9" }}>Couldn't load your analyses</p>
+          <p className="text-sm mb-6" style={{ color: "#64748B" }}>{error}</p>
+          <button onClick={fetchPredictions} className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm cursor-pointer">
             <RefreshCw className="w-4 h-4" aria-hidden="true" />
             Retry
           </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  // ── Empty state ──
-  if (predictions.length === 0) {
-    return (
-      <div className="max-w-5xl mx-auto px-4 py-12 sm:py-16">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Analysis History
-        </h1>
-        <div className="mt-8 bg-white border border-border rounded-xl p-12 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto">
-            <Activity className="w-8 h-8 text-foreground/30" aria-hidden="true" />
-          </div>
-          <h2 className="mt-4 text-lg font-semibold text-foreground">
-            No analyses yet
-          </h2>
-          <p className="mt-2 text-sm text-foreground/50 max-w-sm mx-auto">
-            You haven't analyzed any satellite images yet. Upload your first
-            image to detect floods.
-          </p>
-          <Link
-            to="/upload"
-            className="mt-6 inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-lg font-semibold hover:opacity-90 active:scale-97 transition-all duration-150 cursor-pointer"
+  /* ── Empty ── */
+  if (predictions.length === 0) return (
+    <div className="min-h-screen" style={{ background: "#0F172A" }}>
+      <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-8" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>Analysis History</h1>
+        <div className="glass-card p-20 text-center">
+          <div
+            className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)" }}
           >
+            <Activity className="w-9 h-9" style={{ color: "#3B82F6" }} aria-hidden="true" />
+          </div>
+          <h2 className="text-xl font-bold mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>No analyses yet</h2>
+          <p className="text-sm mb-8 max-w-sm mx-auto" style={{ color: "#64748B" }}>
+            You haven't analyzed any satellite images yet. Upload your first image to detect floods.
+          </p>
+          <Link to="/upload" className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm cursor-pointer">
             <Upload className="w-4 h-4" aria-hidden="true" />
             Analyze Your First Image
           </Link>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
-  // ── Card grid ──
+  /* ── Grid ── */
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 sm:py-16">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Analysis History
-        </h1>
-        <button
-          onClick={fetchPredictions}
-          className="text-sm text-foreground/50 hover:text-foreground transition-colors cursor-pointer inline-flex items-center gap-1"
-          aria-label="Refresh analyses"
-        >
-          <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-          Refresh
-        </button>
-      </div>
-      <p className="text-foreground/70">
-        {predictions.length} analys{predictions.length === 1 ? "is" : "es"} —
-        review your past flood assessments.
-      </p>
+    <div className="min-h-screen" style={{ background: "#0F172A" }}>
+      <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#F1F5F9" }}>
+              Analysis History
+            </h1>
+            <p className="mt-1.5 text-sm" style={{ color: "#64748B" }}>
+              {predictions.length} analys{predictions.length === 1 ? "is" : "es"} — review your past flood assessments.
+            </p>
+          </div>
 
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {predictions.map((p) => {
-          const riskLevel = p.risk_level || "unknown";
-          const riskLabel =
-            riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1);
-          const floodPct = p.flood_percentage ?? 0;
-          const analyzedDate = new Date(p.created_at).toLocaleDateString(
-            "en-US",
-            { year: "numeric", month: "short", day: "numeric" }
-          );
-          const statusBadge = STATUS_BADGES[p.status] || STATUS_BADGES.pending;
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="btn-ghost inline-flex items-center gap-1.5 px-3.5 py-2 text-sm cursor-pointer disabled:opacity-50"
+            aria-label="Refresh analyses"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} aria-hidden="true" />
+            Refresh
+          </button>
+        </div>
 
-          return (
-            <Link
-              key={p.id}
-              to={`/results/${p.id}`}
-              className="group bg-white border border-border rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-200 cursor-pointer flex flex-col"
-            >
-              {/* Thumbnail */}
-              <div className="aspect-[3/2] bg-muted relative overflow-hidden">
-                <img
-                  src={p.original_image_url}
-                  alt={`Analysis from ${analyzedDate}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-                <span
-                  className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold ${statusBadge.className}`}
-                >
-                  {statusBadge.label}
-                </span>
-              </div>
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {predictions.map((p) => {
+            const riskLevel = p.risk_level || "unknown";
+            const riskLabel = riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1);
+            const floodPct = p.flood_percentage ?? 0;
+            const analyzedDate = new Date(p.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+            const statusStyle = STATUS_STYLE[p.status] || STATUS_STYLE.pending;
+            const riskStyle = RISK_STYLE[riskLevel];
 
-              {/* Card body */}
-              <div className="p-4 flex flex-col gap-2 flex-1">
-                <p className="text-sm text-foreground/50 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
-                  {analyzedDate}
-                </p>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5">
-                    <Activity className="w-4 h-4 text-accent" aria-hidden="true" />
-                    <span className="font-semibold text-foreground tabular-nums">
-                      {floodPct.toFixed(1)}%
-                    </span>
-                    <span className="text-xs text-foreground/40">flood</span>
-                  </div>
+            return (
+              <Link
+                key={p.id}
+                to={`/results/${p.id}`}
+                className="glass-card glass-card-hover overflow-hidden flex flex-col cursor-pointer"
+              >
+                {/* Thumbnail */}
+                <div className="aspect-[16/9] relative overflow-hidden" style={{ background: "#080F1E" }}>
+                  <img
+                    src={p.original_image_url}
+                    alt={`Analysis from ${analyzedDate}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    style={{ transition: "transform 0.3s ease" }}
+                    loading="lazy"
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  />
+                  {/* Status badge */}
                   <span
-                    className={`ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${
-                      RISK_BG[riskLevel] || "bg-muted"
-                    } ${RISK_COLORS[riskLevel] || "text-foreground/50"}`}
+                    className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-xs font-semibold"
+                    style={{ color: statusStyle.color, background: statusStyle.bg, border: `1px solid ${statusStyle.border}` }}
                   >
-                    {riskLabel}
+                    {statusStyle.label}
                   </span>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
+
+                {/* Card body */}
+                <div className="p-4 flex flex-col gap-3 flex-1">
+                  <p className="text-xs flex items-center gap-1.5" style={{ color: "#64748B" }}>
+                    <Calendar className="w-3 h-3" aria-hidden="true" />
+                    {analyzedDate}
+                  </p>
+
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <Activity className="w-3.5 h-3.5" style={{ color: "#3B82F6" }} aria-hidden="true" />
+                      <span className="font-bold tabular-nums text-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#60A5FA" }}>
+                        {floodPct.toFixed(1)}%
+                      </span>
+                      <span className="text-xs" style={{ color: "#475569" }}>flooded</span>
+                    </div>
+
+                    {riskStyle && (
+                      <span
+                        className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize"
+                        style={{ color: riskStyle.color, background: riskStyle.bg, border: `1px solid ${riskStyle.border}` }}
+                      >
+                        {riskLabel}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
