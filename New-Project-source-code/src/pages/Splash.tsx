@@ -32,9 +32,10 @@ export default function Splash() {
           boxShadow: "0 0 60px rgba(59,130,246,0.4), 0 0 120px rgba(99,102,241,0.2)",
         }}
       >
-        <svg className="w-10 h-10 sm:w-12 sm:h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M2 10s3-4 6-4 6 4 6 4 3-4 6-4" />
-          <path d="M2 16s3-4 6-4 6 4 6 4 3-4 6-4" />
+        {/* Water droplet — same as Favicon, Navbar, & Footer */}
+        <svg viewBox="0 0 32 32" className="w-10 h-10 sm:w-12 sm:h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 3 C16 3 7 14 7 20 A9 9 0 0 0 25 20 C25 14 16 3 16 3 Z" fill="white" opacity="0.95"/>
+          <path d="M10 22 Q13 19 16 22 Q19 25 22 22" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
         </svg>
       </div>
 
